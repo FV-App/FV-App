@@ -1,0 +1,275 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+
+
+<!--CDN Boostrap 3.4
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+-->
+
+
+<style>
+.futureAppTitle {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 19px;
+    color: #f2851c;
+}
+.futureApp {
+    border: 1px solid black;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    margin-top: 20px;
+    width: 50%;
+    margin: 0 auto;
+}
+.appResults {
+    border: 1px solid gray;
+    background: #f2851c;
+    color: white;
+    border-radius: 5px;
+    padding: 13px;  
+}
+.appResultsPrev {
+    border: 1px solid #f2851c;;
+    border-radius: 5px;
+    padding: 13px;  
+    margin-bottom: 15px;  
+}
+.futureMoney {
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+.appYears {
+    font-size: 20px;
+}
+#purchasePrice, #monthlyExpense {
+    width: 94%;
+    display: inline;
+    margin-left: 2px;
+}
+.missingFields, .applicationSaved {
+    padding: 7px;
+    margin-top: 15px;
+}
+.futureAppContainer {
+    padding-top: 20px;
+    width: 50%;
+    margin: 0 auto;
+}
+.chartContainer {
+    margin-top: 20px;
+}
+.pageApp {
+    margin-top: 30px;
+}
+@media (max-width: 1000px) {
+	.futureAppContainer {
+    	width: 100%;
+	}	
+	.futureApp {
+    	width: 100%;
+	}
+}
+</style>
+
+<div class="container pageApp xs-nopad">
+    <div class="formAppContainer">
+        <div class="futureApp row">
+            <h1 class="futureAppTitle">Future App</h1>
+            <div class="form-group col-md-12 nolpad">
+                <label>What are you purchasing?</label>
+                <input type="text" id="appName" class="form-control" value="">
+            </div>
+            <h1 class="futureAppTitle">App Details</h1>
+            <div class="form-group col-md-6 xs-nopad nolpad">
+                <label>Current Age</label>
+                <input type="number" id="yourAge" class="form-control" value="">
+            </div>
+            <div class="form-group col-md-6 xs-nopad norpad">
+                <label>Retirement Age</label>
+                <input type="number" id="retirementAge" class="form-control" value="">
+            </div>
+            <div class="form-group col-md-6 xs-nopad nolpad">
+                <label>Purchase Price</label> <br>
+                <span>$</span><input type="number" id="purchasePrice" class="form-control" value="">
+            </div>
+            <div class="form-group col-md-6 xs-nopad norpad">
+                <label>Monthly Expense</label> <br>
+                <span>$</span> <input type="number" id="monthlyExpense" class="form-control" value="">
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-12 text-right">
+                <button class="btn btn-primary tmargin clearApp">Clear</button>
+            </div>
+        </div>
+    </div>
+    <div class="futureAppContainer" style="display: none;">
+        <div id="resultFutureApp"></div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="col-md-12 chartContainer" style="display: none;">
+        <canvas id="chartApp"></canvas>
+    </div>
+</div>
+
+<script>
+var myChart = null;
+var config = {options:{}}; 
+
+function createChart(labelsList, dataList, chartid) {
+    ctx = document.getElementById('chartApp').getContext('2d');
+
+    config.type = 'line';
+
+    config = {
+        type: 'line',
+        options: {
+            scales: {
+                y: {
+                    ticks: {
+                        beginAtZero: false 
+                    },
+                    gridLines: {
+                    color: 'rgba(54, 162, 235, 1)',
+                    drawTicks: true  
+                    }
+                },
+                x: {
+                    ticks: {
+                        stepSize: 10,
+                        callback: function(value, index, labels) {
+                            const customLabel = value+1;  
+                            return customLabel;
+                        }
+                    },
+                    gridLines: {
+                        color: 'rgba(54, 162, 235, 1)',
+                        drawTicks: true  
+                    }
+                }
+            }
+        },
+        data: {
+            labels: dataList,
+            datasets: [{
+                label: 'Total Future Value',
+                data: labelsList,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                fill: "start"
+            }]
+        }
+    };
+
+    if (myChart == null) {
+        myChart = new Chart(ctx, config);
+    } else {
+        myChart.destroy();
+        myChart = new Chart(ctx, config);
+    }
+}
+
+function calculateApp() {
+    var purchasePrice = document.querySelector('#purchasePrice').value;
+    var yourAge = document.querySelector('#yourAge').value; 
+    var retirementAge = document.querySelector('#retirementAge').value; 
+    var investmentTime = (retirementAge-yourAge);
+    var monthlyExpense =  document.querySelector('#monthlyExpense').value;
+    var interestRate = 11.86;
+    
+    if (purchasePrice && (investmentTime && investmentTime > 0)) {
+        var totalFutureValue = calculateFutureValue(purchasePrice, investmentTime, interestRate, monthlyExpense);
+        var totalSpent = purchasePrice;
+
+        if (monthlyExpense) {
+            
+            for (var i = 0; i < investmentTime; i++) {
+                var expenseTemp = parseFloat(monthlyExpense)*12;
+                totalSpent = parseFloat(totalSpent)+parseFloat(expenseTemp);
+            }
+        }
+        var potentialGain = totalFutureValue-totalSpent;
+
+        document.querySelector('.futureAppContainer').style.display = 'block';
+        document.querySelector('.chartContainer').style.display = 'block';
+
+        var resultFutureApp = document.getElementById('resultFutureApp');
+        resultFutureApp.innerHTML = `
+        <div class="appYears">
+            <label>Years of Investment: </label>
+            <span>${investmentTime} Years</span>
+        </div>
+        <div class="appResultsPrev tmargin text-center">
+            <label>Total Spent</label><br>
+            <span class="futureMoney">$${new Intl.NumberFormat().format(totalSpent)}</span>
+        </div>
+        <div class="appResultsPrev text-center">
+            <label>Potential Gain</label> <br>
+            <span class="futureMoney">$${new Intl.NumberFormat().format(potentialGain.toFixed(2))}</span>
+        </div>
+        <div class="appResults text-center">
+            <label>Total Future Value at Retirement Age</label><br>
+            <span class="futureMoney">$${new Intl.NumberFormat().format(totalFutureValue.toFixed(2))}</span>
+        </div>`;
+
+        var totalyears = [];
+        var moneyChart = [];
+
+        for (var i = 1; i <= investmentTime; i++) {
+            totalyears.push('Age '+i);
+            moneyChart.push( parseInt(calculateFutureValue(purchasePrice, i, interestRate, monthlyExpense)));
+        }        
+        createChart(moneyChart, totalyears, 'chartApp');
+    }
+}
+
+var purchasePriceElement = document.getElementById('purchasePrice');
+var yourAgeElement = document.getElementById('yourAge');
+var retirementAgeElement = document.getElementById('retirementAge');
+var monthlyExpenseElement = document.getElementById('monthlyExpense');
+
+purchasePriceElement.addEventListener('change', function() {
+    calculateApp();
+});
+
+yourAgeElement.addEventListener('change', function() {
+    calculateApp();
+});
+
+retirementAgeElement.addEventListener('change', function() {
+    calculateApp();
+});
+
+monthlyExpenseElement.addEventListener('change', function() {
+    calculateApp();
+});
+
+var clearApp = document.querySelector('.clearApp');
+
+clearApp.addEventListener('click', function(event) {
+    document.querySelector('.futureAppContainer').style.display = 'none';
+    document.querySelector('.chartContainer').style.display = 'none';
+
+    document.getElementById('appName').value = '';
+    document.getElementById('yourAge').value = '';
+    document.getElementById('retirementAge').value = '';
+    document.getElementById('purchasePrice').value = '';
+    document.getElementById('monthlyExpense').value = '';
+});
+
+function calculateFutureValue(principal, years, interestRate, additionalContribution = 0) {
+    const monthlyRate = interestRate / 100 / 12;
+    const months = years * 12;
+    const futureValue = principal * Math.pow((1 + monthlyRate), months) + additionalContribution * ((Math.pow((1 + monthlyRate), months) - 1) / monthlyRate);
+    return futureValue;
+}
+</script>
+
