@@ -207,7 +207,7 @@ function calculateApp() {
         var moneyChart = [];
 
         for (var i = 1; i <= investmentTime; i++) {
-            totalyears.push('Age '+i);
+            totalyears.push('Year '+i);
             moneyChart.push( parseInt(calculateFutureValue(purchasePrice, i, interestRate, monthlyExpense)));
         }        
         createChart(moneyChart, totalyears, 'chartApp');
