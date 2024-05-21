@@ -94,7 +94,7 @@
             <input type="number" id="monthlyExpense" class="form-control" placeholder="0.00">
         </div>
     </div>
-    <button class="btn btn-primary" onclick="calculateFutureValue()">Calculate</button>
+    <button class="btn btn-primary" onclick="calculateApp()">Calculate</button>
     <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
 
     <div id="results">
@@ -167,7 +167,7 @@ function createChart(labelsList, dataList, chartid) {
     }
 }
 
-function calculateApp() {
+function calculateApp() { //
     var purchasePrice = document.querySelector('#purchasePrice').value;
     var yourAge = document.querySelector('#yourAge').value; 
     var retirementAge = document.querySelector('#retirementAge').value; 
