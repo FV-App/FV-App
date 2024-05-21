@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Value App</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .app-container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .app-logo {
+            display: block;
+            margin: 0 auto 20px;
+            max-width: 100%;
+        }
+        .app-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            margin-bottom: 10px;
+        }
+        .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .result {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .result-spent {
+            background-color: #f2851c;
+            color: white;
+        }
+        .result-gain {
+            background-color: #4caf50;
+            color: white;
+        }
+        .result-total {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <img src="/mnt/data/Fv App Main Logo 2400x1800.jpg" alt="Future Value App Logo" class="app-logo">
+        <h1 class="app-title">Future Value App</h1>
+        <div class="form-group">
+            <label for="purchaseDescription">What are you purchasing?</label>
+            <input type="text" id="purchaseDescription" class="form-control" placeholder="Enter value">
+        </div>
+        <div class="form-group">
+            <label for="yourAge">Your Age</label>
+            <input type="number" id="yourAge" class="form-control" value="0">
+        </div>
+        <div class="form-group">
+            <label for="retirementAge">Retirement Age</label>
+            <input type="number" id="retirementAge" class="form-control" value="0">
+        </div>
+        <div class="form-group">
+            <label for="purchasePrice">Purchase Price</label>
+            <input type="number" id="purchasePrice" class="form-control" value="0.00">
+        </div>
+        <div class="form-group">
+            <label for="monthlyExpense">Monthly Expense</label>
+            <input type="number" id="monthlyExpense" class="form-control" value="0.00">
+        </div>
+        <button class="btn btn-primary" onclick="calculateFutureValue()">Calculate</button>
+        <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+        <div id="results" style="display: none;">
+            <div class="result result-spent" id="totalSpent">Total Spent: $0</div>
+            <div class="result result-gain" id="potentialGain">Potential Gain: $0</div>
+            <div class="result result-total" id="totalFutureValue">Total Future Value at Retirement Age: $0</div>
+        </div>
+    </div>
+    <script>
+        function calculateFutureValue() {
+            var purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+            var yourAge = parseInt(document.getElementById('yourAge').value);
+            var retirementAge = parseInt(document.getElementById('retirementAge').value);
+            var monthlyExpense = parseFloat(document.getElementById('monthlyExpense').value);
+            var investmentTime = retirementAge - yourAge;
+            var interestRate = 11.86;
+
+            if (investmentTime > 0) {
+                var totalSpent = purchasePrice + (monthlyExpense * 12 * investmentTime);
+                var totalFutureValue = purchasePrice * Math.pow((1 + interestRate / 100), investmentTime);
+                var potentialGain = totalFutureValue - totalSpent;
+
+                document.getElementById('totalSpent').innerHTML = 'Total Spent: $' + totalSpent.toFixed(2);
+                document.getElementById('potentialGain').innerHTML = 'Potential Gain: $' + potentialGain.toFixed(2);
+                document.getElementById('totalFutureValue').innerHTML = 'Total Future Value at Retirement Age: $' + totalFutureValue.toFixed(2);
+
+                document.getElementById('results').style.display = 'block';
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('purchaseDescription').value = '';
+            document.getElementById('yourAge').value = '0';
+            document.getElementById('retirementAge').value = '0';
+            document.getElementById('purchasePrice').value = '0.00';
+            document.getElementById('monthlyExpense').value = '0.00';
+            document.getElementById('results').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
