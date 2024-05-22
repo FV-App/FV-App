@@ -24,6 +24,7 @@
             background: white;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: auto;
         }
         .app-logo {
             display: block;
@@ -71,31 +72,39 @@
     <img src="Fv App Main Logo 2400x1800.jpg" alt="Future Value App Logo" class="app-logo">
     <h1 class="app-title">Future Value App</h1>
     <div class="form-group">
-        <label for="purchaseDescription">What are you purchasing?</label>
+        <div class="text-center">
+            <label for="purchaseDescription">What are you purchasing?</label>
+        </div>
         <input type="text" id="appName" class="form-control" placeholder="Enter value">
     </div>
     <div class="row">
-        <div class="col-md-6 form-group">
+        <div class="col-xs-6 form-group">
             <label for="yourAge">Your Age</label>
             <input type="number" id="yourAge" class="form-control" placeholder="0">
         </div>
-        <div class="col-md-6 form-group">
+        <div class="col-xs-6 form-group">
             <label for="retirementAge">Retirement Age</label>
             <input type="number" id="retirementAge" class="form-control" placeholder="0">
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6 form-group">
+        <div class="col-xs-6 form-group">
             <label for="purchasePrice">Purchase Price</label>
-            <input type="number" id="purchasePrice" class="form-control" placeholder="0.00">
+            <input type="number" id="purchasePrice" class="form-control" placeholder="$0.00">
         </div>
-        <div class="col-md-6 form-group">
+        <div class="col-xs-6 form-group">
             <label for="monthlyExpense">Monthly Expense</label>
-            <input type="number" id="monthlyExpense" class="form-control" placeholder="0.00">
+            <input type="number" id="monthlyExpense" class="form-control" placeholder="$0.00">
         </div>
     </div>
-    <button class="btn btn-primary" onclick="calculateApp()">Calculate</button>
-    <button class="btn btn-secondary clearApp">Clear</button>
+    <div class="row">
+        <div class="col-xs-6">
+            <button class="btn btn-primary" onclick="calculateApp()">Calculate</button>
+        </div>
+        <div class="col-xs-6">
+            <button class="btn btn-danger clearApp">Reset</button>
+        </div>
+    </div>
 
     <div id="results">
         <div class="futureAppContainer" style="display: none;">
@@ -103,7 +112,7 @@
         </div>
         <div class="clearfix"></div>
 
-        <div class="col-md-12 chartContainer" style="display: none;">
+        <div class="col-xs-12 chartContainer" style="display: none;">
             <canvas id="chartApp"></canvas>
         </div>
     </div>
@@ -189,8 +198,10 @@ function calculateApp() {
         var resultFutureApp = document.getElementById('resultFutureApp');
         resultFutureApp.innerHTML = `
         <div class="appYears">
-            <label>Years of Investment: </label>
-            <span>${investmentTime} Years</span>
+            <div class="text_center">
+                <label>Years of Investment: </label>
+                <span>${investmentTime} Years</span>
+            </div>
         </div>
         <div id="results" style="display: block;">
             <div class="result result-spent" id="totalSpent">Total Spent: $${new Intl.NumberFormat().format(totalSpent.toFixed(2))}</div>
@@ -232,4 +243,30 @@ clearApp.addEventListener('click', function(event) {
         myChart = null;
     }
 });
+
+function formatCurrencyInput(input) {
+    function reformatValue() {
+        var value = parseFloat(input.value);
+        if (!isNaN(value)) {
+            input.value = value.toFixed(2);
+        }
+    }
+
+    input.addEventListener('input', function() {
+        var value = this.value;
+        if (value.includes('.') && value.split('.')[1].length > 2) {
+            reformatValue();
+        }
+    });
+
+    input.addEventListener('blur', reformatValue);
+}
+
+window.onload = function() {
+    // Apply the function to the purchase price and monthly expense inputs
+    formatCurrencyInput(document.getElementById('purchasePrice'));
+    formatCurrencyInput(document.getElementById('monthlyExpense'));
+};
+
+
 </script>
