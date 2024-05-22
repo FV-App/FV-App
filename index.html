@@ -95,7 +95,7 @@
         </div>
     </div>
     <button class="btn btn-primary" onclick="calculateApp()">Calculate</button>
-    <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+    <button class="btn btn-secondary clearApp">Clear</button>
 
     <div id="results">
         <div class="futureAppContainer" style="display: none;">
@@ -216,18 +216,20 @@ function calculateFutureValue(principal, years, interestRate, additionalContribu
     return futureValue;
 }
 
-function resetForm() {
+var clearApp = document.querySelector('.clearApp');
+
+clearApp.addEventListener('click', function(event) {
+    document.querySelector('.futureAppContainer').style.display = 'none';
+    document.querySelector('.chartContainer').style.display = 'none';
+
     document.getElementById('appName').value = '';
     document.getElementById('yourAge').value = '';
     document.getElementById('retirementAge').value = '';
     document.getElementById('purchasePrice').value = '';
     document.getElementById('monthlyExpense').value = '';
-    document.querySelector('.futureAppContainer').style.display = 'none';
-    document.querySelector('.chartContainer').style.display = 'none';
     if (myChart != null) {
         myChart.destroy();
         myChart = null;
     }
-    document.getElementById('results').style.display = 'none';
-}
+});
 </script>
