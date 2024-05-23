@@ -176,7 +176,7 @@ function calculateApp() {
     var yourAge = parseInt(document.querySelector('#yourAge').value);
     var retirementAge = parseInt(document.querySelector('#retirementAge').value);
     var investmentTime = retirementAge - yourAge;
-    var monthlyExpense = parseFloat(document.querySelector('#monthlyExpense').value);
+    var monthlyExpense = parseFloat(document.querySelector('#monthlyExpense').value) || 0;
     var interestRate = 11.86;
 
     if (!isNaN(purchasePrice) && purchasePrice > 0 && !isNaN(investmentTime) && investmentTime > 0) {
