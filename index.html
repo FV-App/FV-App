@@ -75,7 +75,7 @@
         <div class="text-center">
             <label for="purchaseDescription">What are you purchasing?</label>
         </div>
-        <input type="text" id="appName" class="form-control" placeholder="Enter value">
+        <input type="text" id="appName" class="form-control">
     </div>
     <div class="row">
         <div class="col-xs-6 form-group">
@@ -99,10 +99,10 @@
     </div>
     <div class="row">
         <div class="col-xs-6">
-            <button class="btn btn-primary" onclick="calculateApp()">Calculate</button>
+            <button class="btn btn-danger clearApp">Reset</button>
         </div>
         <div class="col-xs-6">
-            <button class="btn btn-danger clearApp">Reset</button>
+            <button class="btn btn-primary" onclick="calculateApp()">Calculate</button>
         </div>
     </div>
 
@@ -267,6 +267,4 @@ window.onload = function() {
     formatCurrencyInput(document.getElementById('purchasePrice'));
     formatCurrencyInput(document.getElementById('monthlyExpense'));
 };
-
-
 </script>
